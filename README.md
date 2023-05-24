@@ -40,8 +40,9 @@ Setup Flask
 
 ```
 pip install flask
-FLASK_APP=helloworld
-FLASK_ENV=development
+python -c "import flask; print(flask.__version__)"
+export FLASK_APP=helloworld
+export FLASK_ENV=development
 flask run -p 5001
 ```
 
