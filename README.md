@@ -26,10 +26,24 @@ grant all on testDB.* to 'group8'@'localhost';
 alter user 'group8'@'localhost' identified with mysql_native_password by 'Password0!';
 ```
 
-Start Flask server
+Ensure that you have a virtual environment setup.
 
 ```
+pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+```
+
+You should see (venv) in your terminal now.
+
+Setup Flask
+
+```
+pip install flask
+python -c "import flask; print(flask.__version__)"
+export FLASK_APP=helloworld
+export FLASK_ENV=development
 flask run -p 5001
 ```
 
-Try getting response by going to `http://127.0.0.1:5001`
+You can now try getting response by going to `http://127.0.0.1:5001`
