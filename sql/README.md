@@ -1,0 +1,1 @@
+Folder to store sql queries used for the CS 348 project features

@@ -4,6 +4,24 @@ CS 348 Project: Introduction to Database Management
 
 # Setup instructions
 
+
+## Dependencies 
+Ensure that you have a virtual environment setup.
+
+```
+pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+```
+
+You should see (venv) in your terminal now.
+
+Install dependencies: `pip install -r requirements.txt`
+
+Update dependencies: `pip install pipreqs` and `pipreqs .`
+
+## Database
+### Initial MySQL setup
 Open DB
 
 ```
@@ -17,33 +35,39 @@ Setup DB
 # inside MySQL
 CREATE DATABASE testDB;
 USE testDB;
-CREATE TABLE food(uid DECIMAL(3, 0) NOT NULL PRIMARY KEY, name VARCHAR(30), calories INT);
-INSERT INTO food VALUES(1, 'burger' 400);
-INSERT INTO food VALUES(2, 'fries', 300);
-INSERT INTO food VALUES(1, 'coke', 150);
 create user 'group8'@'localhost' identified by 'Password0!';
 grant all on testDB.* to 'group8'@'localhost';
 alter user 'group8'@'localhost' identified with mysql_native_password by 'Password0!';
 ```
 
-Ensure that you have a virtual environment setup.
+### Set up tables and data
+Run migrations to create all database tables: `flask db upgrade`
 
-```
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-```
+Seed database: `flask seed all`
 
-You should see (venv) in your terminal now.
+## Setup Flask
 
-Setup Flask
+Run the server with `python -m flask run`
 
-```
-pip install flask
-python -c "import flask; print(flask.__version__)"
-export FLASK_APP=helloworld
-export FLASK_ENV=development
-flask run -p 5001
-```
+Run with debug mode (auto-reloading after file changes) using `python -m flask run --debug`
 
-You can now try getting response by going to `http://127.0.0.1:5001`
+You can now try getting response by going to `http://127.0.0.1:5000`
+
+# Development
+## Structure of project
+- Database interactions are handled with `flask-sqlalchemy` ORM
+   - ORM models for data are defined in `models.py`
+- Migrations are handled with `flask-migrate` and are stored in `/migrations`
+- SQL queries for assignment submission are stored in `/sql`
+- API endpoints are defined in `/views` based on the relevant resource
+   - e.g. food API endpoints are in `/views/food.py`
+
+## Updating database
+To update the database schema:
+1. Update `models.py` with new schema
+2. Run `flask db migrate -m <message>` to create a migration for this change
+3. Run `flask migrate upgrade` to run the migration
+
+To update seed data:
+1. Update `/views/seed.py` with a new function decorated with `@seed_blueprint.cli.command("cmd_name")`
+2. Run new command using `flask seed <cmd_name>`
