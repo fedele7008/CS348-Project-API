@@ -2,6 +2,7 @@ import click
 from flask import Blueprint
 from app import db, app
 from models import FoodItem, Restaurant, User, FoodLog
+import datetime
 
 seed_blueprint = Blueprint("seed", __name__)
 
@@ -36,11 +37,21 @@ def seed_all():
     db.session.add(tim)
     db.session.commit()
 
-    # add food logs
-    food_items = [big_mac, bec, pannini, double_whopper, whopper_jr]
-    tim_food_logs = []
-    for food_item in food_items:
-        tim_food_logs.append(
+    # add food logs for today
+    food_items_today = [big_mac, bec, pannini]
+    tim_food_logs_today = []
+    for food_item in food_items_today:
+        tim_food_logs_today.append(
             FoodLog(user_id=tim.id, food_item_id=food_item.id))
-    db.session.add_all(tim_food_logs)
+    db.session.add_all(tim_food_logs_today)
+    db.session.commit()
+
+    # add food logs for june 4th
+    food_items_june4 = [double_whopper, whopper_jr]
+    tim_food_logs_june4 = []
+    for food_item in food_items_june4:
+        fl = FoodLog(user_id=tim.id, food_item_id=food_item.id)
+        fl.created_at = '2023-06-04 15:26:32'
+        tim_food_logs_june4.append(fl)
+    db.session.add_all(tim_food_logs_june4)
     db.session.commit()
