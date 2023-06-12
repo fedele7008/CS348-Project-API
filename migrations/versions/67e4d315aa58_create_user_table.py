@@ -1,7 +1,7 @@
 """Create user table
 
 Revision ID: 67e4d315aa58
-Revises: e7dc09a50f96
+Revises: 473d3a3a2dca
 Create Date: 2023-06-05 15:06:01.404590
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '67e4d315aa58'
-down_revision = 'e7dc09a50f96'
+down_revision = '473d3a3a2dca'
 branch_labels = None
 depends_on = None
 
