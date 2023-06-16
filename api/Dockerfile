@@ -1,5 +1,5 @@
 # Select base image that use Python 3.10
-FROM python3.10
+FROM python:3.10
 
 # State environment variables
 ENV PROJECT=CS348_PROJECT_API
