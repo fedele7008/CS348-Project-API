@@ -12,7 +12,7 @@ There are two ways to work on the project:
 You can choose either way to work on the project.
 
 ## Dependencies 
-**If you are manually setting up:**
+####If you are manually setting up:
 Ensure that you have a virtual environment setup.
 
 ```
@@ -37,7 +37,7 @@ Install dependencies: `pip install -r requirements.txt`
 
 Update dependencies: `pip install pipreqs` and `pipreqs .`
 
-**If you are using Docker:**
+####If you are using Docker:
 Download docker desktop from https://www.docker.com/products/docker-desktop/
 This will automatically install docker and docker-compose. Both are required.
 
@@ -63,10 +63,10 @@ Setup DB
 
 ```
 # inside MySQL
-CREATE DATABASE testDB;
-USE testDB;
+CREATE DATABASE cs348_project;
+USE cs348_project;
 create user 'group8'@'localhost' identified by 'Password0!';
-grant all on testDB.* to 'group8'@'localhost';
+grant all on cs348_project.* to 'group8'@'localhost';
 alter user 'group8'@'localhost' identified with mysql_native_password by 'Password0!';
 ```
 
