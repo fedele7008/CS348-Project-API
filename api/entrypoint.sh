@@ -8,7 +8,6 @@ cd src # current dir "/app/src/"
 
 # Run flask migration upgrade
 flask db upgrade
-# flask seed all
 
 cd .. # current dir "/app/"
 

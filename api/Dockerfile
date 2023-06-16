@@ -8,6 +8,11 @@ ENV VERSION=0.0.1
 ENV FLASK_APP=cs348_api
 ENV FLASK_ENV=development
 
+ENV MYSQL_HOST=db
+ENV MYSQL_USER=group8
+ENV MYSQL_PASSWORD=Password0!
+ENV MYSQL_DATABASE=cs348_project
+
 # Set working directory (Home directory)
 WORKDIR /app
 
@@ -24,5 +29,4 @@ COPY . .
 EXPOSE 6608
 
 # Run the entry point script and run the the flask
-CMD ["./entrypoint.sh", "python3", "src/app.py"]
-
+CMD ["./entrypoint.sh", "python3", "-B", "src/app.py"]
