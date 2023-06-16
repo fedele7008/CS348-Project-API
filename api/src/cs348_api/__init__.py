@@ -20,7 +20,7 @@ def create_app():
     app.register_blueprint(blueprints.food_log)
     app.register_blueprint(blueprints.index)
     app.register_blueprint(blueprints.restaurant)
-    app.register_blueprint(blueprints.seed_blueprints)
+    app.register_blueprint(blueprints.seed)
     app.register_blueprint(blueprints.user)
 
     return app

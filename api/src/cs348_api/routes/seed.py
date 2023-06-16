@@ -1,12 +1,13 @@
-import click
 from flask import Blueprint
-from app import db, app
-from models import FoodItem, Restaurant
 
-seed_blueprint = Blueprint("seed", __name__)
+from cs348_api.extensions import db
+from cs348_api.models.food_item import FoodItem
+from cs348_api.models.restaurant import Restaurant
+
+seed = Blueprint("seed", __name__)
 
 
-@seed_blueprint.cli.command("all")
+@seed.cli.command("all")
 def seed_all():
     restaurant1 = Restaurant(name='McDonalds')
     restaurant2 = Restaurant(name='Burger King')
