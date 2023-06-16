@@ -6,7 +6,7 @@
 # This script is for project configuration.
 #
 # You should run this script everytime before working on the project.
-#   source .env_setup.sh
+#   source env_setup.sh
 # 
 # SUPPORTED TERMINALS:
 #   * git bash (Windows)
@@ -70,6 +70,13 @@ is_sourced() {
     return 1  # NOT sourced.
 }
 
+(return 0 2>/dev/null) && sourced=1 || sourced=0
+if [[ ${sourced} -eq 0 ]]; then
+    echo -e "Script is not sourced, please run \"source env_setup.sh\" instead."
+    echo -e "For more information, please check \"source env_setup.sh --help\" for more usages."
+    return 1 2> /dev/null; exit 1
+fi
+
 usage() {
     echo -e "To start working on CS 348 Project, goto project's directory and run \"\e[3m\e[35msource env_setup.sh\e[0m\""
     echo -e ""
@@ -83,7 +90,24 @@ usage() {
 
 instruction () {
     echo -e "\e[36mCS 348 PROJECT DEVELOP ENVIRONMENT FEATURES\e[0m"
-    echo -e "TODO: FILL THIS"
+    echo -e "  \e[33mroot\e[0m\t\t\t\tMove to ${CS348_PROJECT_ROOT}."
+    echo -e "  \e[33mapi-server\e[0m\t\t\tProvides useful commands for the developer. \e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
+    echo -e ""
+    echo -e "\e[36mGENERAL INSTRUCTIONS\e[0m"
+    echo -e "  The project has 2 core docker containers: db (a.k.a. database), and app (a.k.a. flask-api-server)."
+    echo -e "  The server can be easily run by \"api-server up\" command (Booting takes 30-60 seconds)."
+    echo -e "  Once server is running, you can check the database using GUI using \"api-server open db\" or through CLI using \"api-server connect db\"."
+    echo -e "  Ther server is called \e[33mdb\e[0m. The username for db is \e[33mgroup8\e[0m and the password is \e[33mPassword0!\e[0m, finally the database is \e[33mcs348_project\e[0m."
+    echo -e "  In order to use \"flask seed all\" command, connect to api container through \"api-server connect api\" command, then cd into src, then type \"flask seed all\""
+    echo -e "  finally, to close the server, enter \"api-server down\". For more detailed information, please check \"api-server --help\""
+    echo -e ""
+    echo -e "\e[36mREMARK\e[0m"
+    echo -e "  * the data/ folder is mounted with db container - it contains mysql data, so if you want to reset the data, simply remove this folder and rebuild."
+    echo -e "  * the api/ folder is mounted with app container - since flask is in debugging mode, if you edit the code and save, the change will be reflected immediately."
+    echo -e "  * do not upload data/ folder to GitHub (it's your local database)."
+    echo -e "  * if you need to use flask migration commands, use \"api-server connect api\" feature."
+    echo -e ""
+    echo -e "If you have any questions, please contact John Yoon <j53yoon@uwaterloo.ca>."
 }
 
 set_features () {
@@ -94,12 +118,30 @@ set_features () {
         cd ${CS348_PROJECT_ROOT}
         if [[ ${#} -eq 0 ]]; then
             echo -e "\e[31mINVALID ARGUMENT: at least 1 argument expected.\e[0m"
-            echo -e "\e[33mPlease check \e[3m'server --help'\e[0m\e[33m for the usage."
+            echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
             cd ${__CS348_SERVER_INITITAL_DIR}
             return 1
         else
             if [[ ${1} == "-h" || ${1} == "--help" ]]; then
-                echo -e "TODO: FILL THIS"
+                echo -e "\e[1mPurpose:\e[0m"
+                echo -e "  Allows developers to control docker features with easy commands."
+                echo -e ""
+                echo -e "\e[1mFeatures:\e[0m"
+                echo -e " \e[3m\e[33m api-server [-h|--help]\e[0m\t\tShow this help."
+                echo -e " \e[3m\e[33m api-server [up|start]\e[0m\t\tBuild a new image and start up the server on background (recommended)."
+                echo -e " \e[3m\e[33m api-server [up|start] here\e[0m\t\tBuild a new image and start up the server on this terminal."
+                echo -e " \e[3m\e[33m api-server [down|stop]\e[0m\t\tStop the running servers."
+                echo -e " \e[3m\e[33m api-server [ls|show] [images|containers]\e[0m\t\tShow all the images or containers built."
+                echo -e " \e[3m\e[33m api-server [rm|remove|delete] [images|containers|all]\e[0m\t\tdelete all the images and/or containers built."
+                echo -e " \e[3m\e[33m api-server [ps|process|processess]\e[0m\t\tShow every running containers."
+                echo -e " \e[3m\e[33m api-server connect [api|app|flask]\e[0m\t\tOpen bash terminal within the api container."
+                echo -e " \e[3m\e[33m api-server connect [db|database|mysql]\e[0m\t\tOpen bash terminal within the db container."
+                echo -e " \e[3m\e[33m api-server log [api|app|flask]\e[0m\t\tShow the terminal log of the api container."
+                echo -e " \e[3m\e[33m api-server log [db|database|mysql]\e[0m\t\tShow the terminal log of the db container."
+                echo -e " \e[3m\e[33m api-server open [api|app|flask]\e[0m\t\tOpen the browser directed to http://localhost:${CS348_PROJECT_API_PORT}/."
+                echo -e " \e[3m\e[33m api-server open [db|database|mysql]\e[0m\t\tOpen the browser directed to http://localhost:${CS348_PROJECT_ADMINER_PORT}/."
+                echo -e ""                
+                echo -e "\e[35m\e[1m\e[3mYou will require python3 installed in your terminal to use \"api-server open <option>\".\e[0m"
                 cd ${__CS348_SERVER_INITITAL_DIR}
                 return 0
             elif [[ ${1} == "up" || ${1} == "start" ]]; then
@@ -113,14 +155,16 @@ set_features () {
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
-                        # TODO: tell invalid argument ${2} and show help suggestions
+                        echo -e "\e[31mINVALID ARGUMENT: ${2}\e[0m"
+                        echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 1
                     fi
                 fi
             elif [[ ${1} == "ls" || ${1} == "show" ]]; then
                 if [[ ${#} -eq 1 ]]; then
-                    # TODO: tell we need more arugments and show help suggestions
+                    echo -e "\e[31mINVALID ARGUMENT: More argument is expected for ${1}\e[0m"
+                    echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                     cd ${__CS348_SERVER_INITITAL_DIR}
                     return 1
                 else
@@ -133,21 +177,23 @@ set_features () {
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
-                        # TODO: tell invalid argument ${2} and show help suggestions
+                        echo -e "\e[31mINVALID ARGUMENT: ${2}\e[0m"
+                        echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 1
                     fi
                 fi
             elif [[ ${1} == "rm" || ${1} == "delete" || ${1} == "remove" ]]; then
                 if [[ ${#} -eq 1 ]]; then
-                    # TODO: tell we need more arugments and show help suggestions
+                    echo -e "\e[31mINVALID ARGUMENT: More argument is expected for ${1}\e[0m"
+                    echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                     cd ${__CS348_SERVER_INITITAL_DIR}
                     return 1
                 else
                     if [[ ${2} == "images" ]]; then
                         __CS348_RM_TEST=$(docker image ls -q)
                         if [[ ${__CS348_RM_TEST} == "" ]]; then
-                            # TODO: Notice that image is already empty
+                            echo -e "\e[33mThere are no images.\e[0m"
                             cd ${__CS348_SERVER_INITITAL_DIR}
                             return 0
                         else
@@ -158,7 +204,7 @@ set_features () {
                     elif [[ ${2} == "containers" ]]; then
                         __CS348_RM_TEST=$(docker container ls -aq)
                         if [[ ${__CS348_RM_TEST} == "" ]]; then
-                            # TODO: Notice that container is already empty
+                            echo -e "\e[33mThere are no containers.\e[0m"
                             cd ${__CS348_SERVER_INITITAL_DIR}
                             return 0
                         else
@@ -169,14 +215,14 @@ set_features () {
                     elif [[ ${2} == "all" ]]; then
                         __CS348_RM_TEST=$(docker image ls -q)
                         if [[ ${__CS348_RM_TEST} == "" ]]; then
-                            # TODO: Notice that image is already empty
+                            echo -e "\e[33mThere are no images.\e[0m"
                         else
                             docker image rm -f $(docker image ls -q)
                         fi
 
                         __CS348_RM_TEST=$(docker container ls -aq)
                         if [[ ${__CS348_RM_TEST} == "" ]]; then
-                            # TODO: Notice that container is already empty
+                            echo -e "\e[33mThere are no containers.\e[0m"
                         else
                             docker container rm -f $(docker container ls -aq)
                         fi
@@ -184,7 +230,8 @@ set_features () {
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
-                        # TODO: tell invalid argument ${2} and show help suggestions
+                        echo -e "\e[31mINVALID ARGUMENT: ${2}\e[0m"
+                        echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 1
                     fi
@@ -199,7 +246,8 @@ set_features () {
                 return 0
             elif [[ ${1} == "connect" ]]; then
                 if [[ ${#} -eq 1 ]]; then
-                    # TODO: tell we need more arugments and show help suggestions
+                    echo -e "\e[31mINVALID ARGUMENT: More argument is expected for ${1}\e[0m"
+                    echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                     cd ${__CS348_SERVER_INITITAL_DIR}
                     return 1
                 else
@@ -208,7 +256,7 @@ set_features () {
                         if [[ ${?} -eq 0 ]]; then
                             docker exec -it cs348-project-api-api-1 bash
                         else
-                            # tell container is not running
+                            echo -e "\e[33mThe api container is currently not on service.\e[0m"
                         fi
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
@@ -217,19 +265,21 @@ set_features () {
                         if [[ ${?} -eq 0 ]]; then
                             docker exec -it cs348-project-api-db-1 bash
                         else
-                            # tell container is not running
+                            echo -e "\e[33mThe db container is currently not on service.\e[0m"
                         fi
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
-                        # TODO: tell invalid argument ${2} and show help suggestions
+                        echo -e "\e[31mINVALID ARGUMENT: ${2}\e[0m"
+                        echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 1
                     fi
                 fi
             elif [[ ${1} == "open" ]]; then
                 if [[ ${#} -eq 1 ]]; then
-                    # TODO: tell we need more arugments and show help suggestions
+                    echo -e "\e[31mINVALID ARGUMENT: More argument is expected for ${1}\e[0m"
+                    echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                     cd ${__CS348_SERVER_INITITAL_DIR}
                     return 1
                 else
@@ -242,14 +292,16 @@ set_features () {
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
-                        # TODO: tell invalid argument ${2} and show help suggestions
+                        echo -e "\e[31mINVALID ARGUMENT: ${2}\e[0m"
+                        echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 1
                     fi
                 fi
             elif [[ ${1} == "log" || ${1} == "logs" ]]; then
                 if [[ ${#} -eq 1 ]]; then
-                    # TODO: tell we need more arugments and show help suggestions
+                    echo -e "\e[31mINVALID ARGUMENT: More argument is expected for ${1}\e[0m"
+                    echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                     cd ${__CS348_SERVER_INITITAL_DIR}
                     return 1
                 else
@@ -262,13 +314,15 @@ set_features () {
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
-                        # TODO: tell invalid argument ${2} and show help suggestions
+                        echo -e "\e[31mINVALID ARGUMENT: ${2}\e[0m"
+                        echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 1
                     fi
                 fi
             else
-                # TODO: tell invalid argument ${1} and show help suggestions
+                echo -e "\e[31mINVALID ARGUMENT: ${1}\e[0m"
+                echo -e "\e[33mPlease check \e[3m'api-server --help'\e[0m\e[33m for the usage."
                 cd ${__CS348_SERVER_INITITAL_DIR}
                 return 1
             fi
@@ -327,6 +381,7 @@ fi
 echo -e "\e[0m     SHELL: \t\e[32m${SHELL}\e[0m"
 echo -e "\e[0m      ROOT: \t\e[32m${CS348_PROJECT_ROOT}\e[0m"
 
+echo -e ""
 echo -en "\e[36mVERIFYING DOCKER ----------- \e[0m"
 docker --version 1> /dev/null 2> /dev/null
 if [[ ${?} -eq 0 ]]; then
