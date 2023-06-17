@@ -9,6 +9,7 @@ from cs348_api.models.user import User
 auth = Blueprint('auth', __name__)
 
 
+# Called when token given is already expired
 @jwt.expired_token_loader
 def expired_token_callback(header, payload):
     user = db.session.query(User).filter_by(id=payload['sub']).first()
@@ -18,21 +19,54 @@ def expired_token_callback(header, payload):
     }), 401
 
 
+# Called when token is corrupted
 @jwt.invalid_token_loader
 def invalid_token_callback(e):
     return jsonify({
         'result': 'Invalid token',
         'message': '{}'.format(e)
-    })
+    }), 401
+
+
+# Called when something is wrong in authorization in general
+@jwt.unauthorized_loader
+def unauthorized_callback(e):
+    return jsonify({
+        'result': 'Unauthorized',
+        'message': '{}'.format(e)
+    }), 401
 
 
 @auth.route('/register', methods=['POST'])
 def register():
-    # Get information from request body
-    body = request.get_json()
-    name = body['name']
-    email = body['email']
-    password = body['hashed_password'] # password should be hashed from front-end
+    # Get information from request
+    if not request.is_json:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'Request must be in JSON format'
+        }), 400
+    
+    name = request.json.get('name', None)
+    email = request.json.get('email', None)
+    password = request.json.get('hashed_password', None) # password should be hashed from front-end
+
+    if name is None:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'Name is required'
+        }), 400
+    
+    if email is None:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'Email is required'
+        }), 400
+    
+    if password is None:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'hashed_password is required'
+        }), 400
 
     # Check if user with same email already exists
     search = db.session.query(User).filter_by(email=email).first()
@@ -58,10 +92,27 @@ def register():
 
 @auth.route('/login', methods=['POST'])
 def login():
-    # Get information from request body
-    body = request.get_json()
-    email = body['email']
-    password = body['hashed_password']
+    # Get information from request
+    if not request.is_json:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'Request must be in JSON format'
+        }), 400
+    
+    email = request.json.get('email', None)
+    password = request.json.get('hashed_password', None) # password should be hashed from front-end
+    
+    if email is None:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'Email is required'
+        }), 400
+    
+    if password is None:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'hashed_password is required'
+        }), 400
 
     # Check if user exists
     user = db.session.query(User).filter_by(email=email).first()
@@ -85,6 +136,7 @@ def login():
         }), 401
     
 
+# Sample endpoint
 @auth.route('/test_user_only_feature', methods=['POST', 'GET'])
 @flask_jwt_extended.jwt_required()
 def test_user_only_feature():
