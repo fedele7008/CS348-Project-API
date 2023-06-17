@@ -7,6 +7,6 @@ restaurant = Blueprint('restaurant', __name__, url_prefix='/restaurant')
 
 
 @restaurant.route('/', methods=['GET'])
-def get_food_logs():
+def get_restaurants():
     records = db.session.query(Restaurant).all()
     return jsonify(records)

@@ -1,4 +1,5 @@
 import os 
+import datetime
 
 
 mysql_config = {
@@ -36,3 +37,11 @@ def alchemy_echo():
 
 def alchemy_track_modifications():
     return False
+
+
+def jwt_secret_key():
+    return 'temporary'
+
+
+def jwt_access_token_expires():
+    return datetime.timedelta(minutes=5)
