@@ -1,0 +1,5 @@
+# All files are checked into repo with eol=LF
+* test=auto
+
+# These files are checked out to local with eol=LF
+entrypoint.sh eol=lf
