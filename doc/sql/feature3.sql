@@ -13,6 +13,8 @@ SELECT  id
        ,COUNT(*) AS purchase_count
 FROM foods_in_date
 GROUP BY  id;
+HAVING purchase_count > <min_count>
+ORDER BY <choice>
 
 -- Most popular restaurants
 WITH foods_and_restaurants_in_date AS
@@ -31,6 +33,8 @@ SELECT  id
        ,COUNT(*) AS purchase_count
 FROM foods_and_restaurants_in_date
 GROUP BY  id;
+HAVING purchase_count > <min_count>
+ORDER BY <choice>;
 
 -- Most popular foods at a restaurant
 WITH foods_at_restaurant_in_date AS
@@ -50,3 +54,5 @@ SELECT  id
        ,COUNT(*) AS purchase_count
 FROM foods_in_date
 GROUP BY  id;
+HAVING purchase_count > <min_count>
+ORDER BY purchase_count <choice>;
