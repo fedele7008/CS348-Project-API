@@ -5,7 +5,7 @@ WITH user_foods AS
         FROM food_log AS flog
         JOIN food_item AS fitem
         ON flog.food_item_id = fitem.id
-        WHERE flog.user_id = 9
+        WHERE flog.user_id = <id>
 )
 SELECT  DATE(created_at) as foodDate
        ,SUM(calories) as calorieSum
