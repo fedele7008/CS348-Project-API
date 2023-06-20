@@ -1,5 +1,9 @@
 from datetime import datetime
+import os
+
 from flask import Blueprint, jsonify, request
+import click
+import requests as req
 import flask_jwt_extended
 import bcrypt
 
@@ -87,8 +91,8 @@ def register():
         'result': 'User created',
         'message': 'user registered: {}'.format(new_user),
         'access_token': flask_jwt_extended.create_access_token(identity=new_user.id)
-    }), 201
-        
+    }), 200
+
 
 @auth.route('/login', methods=['POST'])
 def login():
@@ -134,7 +138,7 @@ def login():
             'result': 'Login failed',
             'message': 'Wrong credentials'
         }), 401
-    
+
 
 # Sample endpoint
 @auth.route('/test_user_only_feature', methods=['POST', 'GET'])
@@ -142,7 +146,38 @@ def login():
 def test_user_only_feature():
     current_user_id = flask_jwt_extended.get_jwt_identity()
     if current_user_id is None:
-        return 'This feature requires authentication', 401
+        return jsonify({
+            'result': 'Unauthorized',
+            'message': 'This feature requires authentication'
+        }), 401
     else:
         user = db.session.query(User).filter_by(id=current_user_id).first()
-        return 'Welcome! {}'.format(user.name), 200
+        return jsonify({
+            'result': 'Authorized',
+            'message': 'Welcome! {}'.format(user.name)
+        }), 200
+        
+
+
+# CLI tester
+@auth.cli.command('test')
+@click.argument('access_token')
+def test_user_only_feature(access_token):
+    # Search environment variable for api_uri and port
+    api_uri = os.environ.get('CS348_API_URI', 'http://localhost')
+    api_port = os.environ.get('CS348_API_PORT', '6608')
+
+    uri = f'{api_uri}:{api_port}'
+
+    headers = {
+        'Authorization': 'Bearer {}'.format(access_token)
+    }
+
+    try:
+        res = req.post(f'{uri}/test_user_only_feature', headers = headers)
+    except req.exceptions.ConnectionError:
+        print(f'Could not connect to CS348 API at {uri}, check if flask server is running')
+        return
+    
+    result = res.json()
+    print(f'{result["result"]}: {result["message"]}')
