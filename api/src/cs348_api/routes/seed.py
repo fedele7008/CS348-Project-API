@@ -6,6 +6,7 @@ from cs348_api.models.food_item import FoodItem
 from cs348_api.models.restaurant import Restaurant
 from cs348_api.models.food_log import FoodLog
 from cs348_api.models.user import User
+from cs348_api.models.goal import Goal
 from datetime import datetime
 
 seed = Blueprint("seed", __name__)
@@ -16,11 +17,13 @@ def delete_all():
     db.session.query(FoodLog).delete()
     db.session.query(FoodItem).delete()
     db.session.query(Restaurant).delete()
-    db.session.query(User).delete()
+    db.session.query(Goal).delete()
+    db.session.query(User).delete()        
     db.session.execute(text('ALTER TABLE food_log AUTO_INCREMENT=1'))
     db.session.execute(text('ALTER TABLE food_item AUTO_INCREMENT=1'))
     db.session.execute(text('ALTER TABLE restaurant AUTO_INCREMENT=1'))
-    db.session.execute(text('ALTER TABLE user AUTO_INCREMENT=1'))
+    db.session.execute(text('ALTER TABLE goal AUTO_INCREMENT=1'))
+    db.session.execute(text('ALTER TABLE user AUTO_INCREMENT=1'))    
     db.session.commit()
 
 def add_food_logs(user, food_list, created_at):
@@ -57,6 +60,16 @@ def seed_all():
     jane = User(name="Jane Doe", email="jane@email.com", password="janedoe", registration_date=datetime.utcnow())
     db.session.add(tim)
     db.session.add(jane)
+    db.session.commit()
+
+    # add goals for these users
+    tim_cal_goal = Goal(name="my calorie goal", user_id=tim.id, goal_type="calorie", quantity=2500, streak=0)
+    tim_fat_goal = Goal(name="get gains goal", user_id=tim.id, goal_type="fat", quantity=100, streak=1)
+    tim_protein_goal = Goal(name="my fat goal", user_id=tim.id, goal_type="fat", quantity=50, streak=5)
+    tim_sugar_goal = Goal(name="reduce sugar!", user_id=tim.id, goal_type="sugar", quantity=20, streak=2)
+    jane_cal_goal = Goal(name="reduce calorie goal", user_id=jane.id, goal_type="calorie", quantity=2000, streak=0)
+    jane_fiber_goal = Goal(name="increase fiber consumption", user_id=jane.id, goal_type="fiber", quantity=2000, streak=0)
+    db.session.add_all([tim_cal_goal, tim_fat_goal, tim_protein_goal, tim_sugar_goal, jane_cal_goal, jane_fiber_goal])
     db.session.commit()
 
     # add food logs for Tim and Jane

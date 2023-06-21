@@ -17,7 +17,7 @@ class Restaurant(db.Model):
 
     # __repr__ is used for printing object info (debugging purposes)
     def __repr__(self):
-        return '<Restaurnat: id={}, name={}>'.format(
+        return '<Restaurant: id={}, name={}>'.format(
             self.id, self.name
         )
     
