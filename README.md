@@ -2,9 +2,27 @@
 
 CS 348 Project: Introduction to Database Management
 
+This is the backend API for a nutrition application that allows users to search for the nutritional information of different restaurant food items, log the foods that they ate, view statistics related to their eating habits, and set nutritional goals. 
+
+# Structure of project
+## Structure
+- Flask project is structured as a package named `cs348_api`
+- **[C2-4]** SQL queries for assignment submission are stored in `doc/sql`
+- Database interactions are handled with `flask-sqlalchemy` ORM
+  - ORM models for data are defined in `models` subpackage
+- Migrations are handled with `flask-migrate` and are stored in `/api/src/migrations`
+- API endpoints are defined in `/api/src/cs348_api/routes` based on the relevant resource
+  - e.g. food API endpoints are in `/api/src/cs348_api/routes/food_item.py`
+  - `/api/src/cs348_api/routes/index.py` handles base route (e.g. localhost:6608/)
+
+## Current Features (C5)
+- Basic API endpoints to view contents of tables are avaliable with GET requests to `/food_item`, `/food_log`, `/restaurant`, `/user`
+- **[R6]** API endpoint to fetch all food items of a restaurant is avaliable at `/restaurant/<restaurant_name>/foods`
+- **[R10]** API endpoints related to authentication are avaliable at: POST to `/register`, POST to `/login`, GET to `/test_user_only_feature`
+
 # Setup instructions
 
-download the repository to your disired location, the path shouldn't contain any space.
+Download the repository to your desired location, the path shouldn't contain any space.
 
 There are two ways to work on the project:
 
@@ -15,11 +33,11 @@ You can choose either way to work on the project.
 
 ## Dependencies
 
-####If you are manually setting up:
+### If you are manually setting up:
 Ensure that you have a virtual environment setup.
 
 ```
-# For MacOS
+# For MacOS/Linux
 pip install virtualenv
 virtualenv venv
 source venv/bin/activate
@@ -34,14 +52,14 @@ python3 -m virtualenv venv
 
 You should see (venv) in your terminal now.
 
-Then goto `api/` folder using `cd api` ,
+Then go to `api/` folder using `cd api` ,
 
 Install dependencies: `pip install -r requirements.txt`
 
 Update dependencies: `pip install pipreqs` and `pipreqs .`
 
-####If you are using Docker:
-Download docker desktop from https://www.docker.com/products/docker-desktop/
+### If you are using Docker:
+Download Docker Desktop from https://www.docker.com/products/docker-desktop/
 This will automatically install docker and docker-compose. Both are required.
 
 Then open the 'terminal' if you are using MacOS or Linux.
@@ -56,7 +74,7 @@ checkout the available commands using `api-server --help` or `api-server -h`.
 
 ### Initial MySQL setup
 
-#### For Manual setup:
+#### **For Manual setup:**
 
 Open DB
 
@@ -76,19 +94,21 @@ grant all on cs348_project.* to 'group8'@'localhost';
 alter user 'group8'@'localhost' identified with mysql_native_password by 'Password0!';
 ```
 
-#### For Docker setup:
+#### **For Docker setup:**
 
 Doesn't require any action
 
 ### Set up tables and data
 
-#### For Manual setup:
+#### **For Manual setup:**
 
 Run migrations to create all database tables: `flask db upgrade`
 
 Seed database: `flask seed all`
 
-#### For Docker setup:
+Clean database (for reseed): `flask seed delete`
+
+#### **For Docker setup:**
 
 `flask db upgrade` is automatically done by Docker.
 
@@ -100,7 +120,7 @@ You can use `api-server connect api` -> `cd src` command -> `flask seed all` com
 
 ## Setup Flask
 
-#### For Manual setup:
+#### **For Manual setup:**
 
 Set the Flask app environment variable.
 
@@ -108,15 +128,15 @@ Set the Flask app environment variable.
 
 Ensure you are running commands in the `api/src` directory.
 
-Run the server with `python -m flask run`
+Run the server with `flask run -p 6608`
 
-Run with debug mode (auto-reloading after file changes) using `python -m flask run --debug`
+Run with debug mode (auto-reloading after file changes) using `flask run --debug -p 6608`
 
 You can now try getting response by going to `http://127.0.0.1:6608`
 
-#### For Docker setup:
+#### **For Docker setup:**
 
-run `api-server up` or `api-server start`, it will automatically start flask server. Openning to `http://localhost:6608`.
+Run `api-server up` or `api-server start`. This will automatically start flask server at `http://localhost:6608`.
 
 You can also inspect/modify Database in GUI: goto `http://localhost:8080` and login to database:
 
@@ -127,18 +147,6 @@ You can also inspect/modify Database in GUI: goto `http://localhost:8080` and lo
 - Database: cs348_project
 
 # Development
-
-## Structure of project
-
-- Flask project is structured as a package named `cs348_api`
-- Database interactions are handled with `flask-sqlalchemy` ORM
-  - ORM models for data are defined in `models` subpackage
-- Migrations are handled with `flask-migrate` and are stored in `/migrations`
-- SQL queries for assignment submission are stored in `doc/sql`
-- API endpoints are defined in `/routes` based on the relevant resource
-  - e.g. food API endpoints are in `/routes/food_item.py`
-  - `/routes/index.py` handles base route (e.g. localhost:6608/)
-
 ## Updating database
 
 To update the database schema:
