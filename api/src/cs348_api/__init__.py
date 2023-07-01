@@ -4,6 +4,11 @@ from flask_cors import CORS
 from cs348_api.extensions import db, migrate, jwt
 import cs348_api.routes as blueprints
 from cs348_api import config
+from cs348_api.models.food_log import FoodLog
+from cs348_api.models.food_item import FoodItem
+from cs348_api.models.goal import Goal
+from cs348_api.models.restaurant import Restaurant
+from cs348_api.models.user import User
 
 def create_app():
     app = Flask(__name__)
