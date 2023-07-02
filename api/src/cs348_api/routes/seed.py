@@ -1,5 +1,9 @@
 from flask import Blueprint
 from sqlalchemy.sql import text
+from datetime import datetime
+import csv
+from faker import Faker
+import random
 
 from cs348_api.extensions import db
 from cs348_api.models.food_item import FoodItem
@@ -7,7 +11,6 @@ from cs348_api.models.restaurant import Restaurant
 from cs348_api.models.food_log import FoodLog
 from cs348_api.models.user import User
 from cs348_api.models.goal import Goal
-from datetime import datetime
 
 seed = Blueprint("seed", __name__)
 
@@ -35,7 +38,7 @@ def add_food_logs(user, food_list, created_at):
     db.session.add_all(food_logs)
     db.session.commit()
 
-@seed.cli.command("all")
+@seed.cli.command("sample")
 def seed_all():
     restaurant1 = Restaurant(name='McDonalds')
     restaurant2 = Restaurant(name='Burger King')
@@ -79,3 +82,118 @@ def seed_all():
     add_food_logs(jane, [pannini], '2023-06-11 11:30:00')
     add_food_logs(jane, [pannini, double_whopper, bec, whopper_jr], '2023-06-12 11:30:00')
 
+@seed.cli.command("prod")
+def seed_prod():   
+    # Add restaurants 
+    burger_king = Restaurant(name='Burger King')
+    mcdonalds = Restaurant(name='McDonalds')
+    starbucks = Restaurant(name='Starbucks')
+    db.session.add_all([burger_king, mcdonalds, starbucks])
+    db.session.commit()
+
+    # Load food items from csv
+    burger_king_food = []
+    with open("./cs348_api/data/burger-king-menu.csv") as f:
+        reader = csv.DictReader(f)
+        next(reader)
+        for row in reader:
+            new_entry = FoodItem(
+                restaurant_id=burger_king.id,
+                name=row["Item"],
+                calories=row["Calories"],
+                fat=row["Fat (g)"],
+                carb=row["Total Carb (g)"],
+                fiber=row["Dietary Fiber (g)"],
+                protein=row["Protein (g)"]
+            )
+            burger_king_food.append(new_entry)
+        db.session.add_all(burger_king_food)
+        db.session.commit()
+    
+    mcdonalds_food = []
+    with open("./cs348_api/data/mcdonalds.csv") as f:
+        reader = csv.DictReader(f)
+        next(reader)
+        for row in reader:
+            new_entry = FoodItem(
+                restaurant_id=mcdonalds.id,
+                name=row["Item"],
+                calories=row["Calories"],
+                fat=row["Total Fat"],
+                carb=row["Carbohydrates"],
+                fiber=row["Dietary Fiber"],
+                protein=row["Protein"]
+            )
+            mcdonalds_food.append(new_entry)
+        db.session.add_all(mcdonalds_food)
+        db.session.commit()
+    
+    starbucks_food = []
+    with open("./cs348_api/data/starbucks.csv") as f:
+        reader = csv.DictReader(f)
+        next(reader)
+        for row in reader:
+            new_entry = FoodItem(
+                restaurant_id=starbucks.id,
+                name=row["item"],
+                calories=row["calories"],
+                fat=row["fat"],
+                carb=row["carb"],
+                fiber=row["fiber"],
+                protein=row["protein"]
+            )
+            starbucks_food.append(new_entry)
+        db.session.add_all(starbucks_food)
+        db.session.commit()
+    
+    # Randomly generate 50 users    
+    faker = Faker()    
+    Faker.seed(0) # ensure deterministic output
+    users = []
+    for i in range(50):
+        new_user = User(
+            name=faker.name(),
+            email=faker.email(),
+            password=faker.slug(), # random slug as password (e.g. "of-street-fight")
+            registration_date=faker.date_time_this_year() # random registration date from current year
+        )
+        users.append(new_user)
+    db.session.add_all(users)
+    db.session.commit()
+
+    # Randomly generate food logs for users
+    random.seed(0) # ensure deterministic output
+    all_foods = mcdonalds_food + burger_king_food + starbucks_food
+    for user in users:
+        # Generate the days that they have logged food
+        days_logged_may = random.sample(range(1, 32), faker.random_int(0, 31))
+        days_logged_june = random.sample(range(1, 31), faker.random_int(0, 30))
+        # Generate the logs for each day
+        for day in days_logged_may:
+            date = datetime(2023, 5, day, 0, 0)    
+            foods_logged = random.sample(all_foods, faker.random_int(1, 5)) # log 1-5 random foods for that day     
+            add_food_logs(user, foods_logged, date.strftime('%Y-%m-%d %H:%M:%S'))
+        for day in days_logged_june:
+            date = datetime(2023, 6, day, 0, 0)    
+            foods_logged = random.sample(all_foods, faker.random_int(1, 5)) # log 1-5 random foods for that day     
+            add_food_logs(user, foods_logged, date.strftime('%Y-%m-%d %H:%M:%S'))
+
+    # Randomly generate goals for users
+    # List the type of goals and the range of quantities to randomly generate from
+    goal_types = ["calorie", "fat", "carb", "fiber", "protein"]
+    goal_quantities = {"calorie": [1500, 5000], "fat": [20, 200], "carb": [50, 500], "fiber": [10, 100], "protein": [30, 200]}
+    # For each user, randomly generate between 0 to 5 goals
+    for user in users:
+        num_goals = faker.random_int(0, 5)
+        goals = random.sample(goal_types, num_goals) # choose num_goals goal types
+        for goal_type in goals:
+            # Generate a goal with quantity within the goal type's specified range
+            new_goal = Goal(
+                name='{}\'s {} goal'.format(user.name, goal_type),
+                user_id=user.id,
+                goal_type=goal_type,
+                quantity=faker.random_int(goal_quantities[goal_type][0], goal_quantities[goal_type][1], 10),
+                streak=0
+            )
+            db.session.add(new_goal)
+        db.session.commit()
