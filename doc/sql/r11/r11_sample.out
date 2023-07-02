@@ -1,0 +1,8 @@
++-----------------+-----------+----------+-------------+-------------------+
+| name            | goal_type | quantity | consumption | status            |
++-----------------+-----------+----------+-------------+-------------------+
+| my calorie goal | calorie   |     2500 |        1510 | Goal not Achieved |
+| get gains goal  | fat       |      100 |          63 | Goal not Achieved |
+| my fat goal     | fat       |       50 |          63 | Goal Achieved     |
+| reduce sugar!   | sugar     |       20 |          53 | Goal Achieved     |
++-----------------+-----------+----------+-------------+-------------------+
