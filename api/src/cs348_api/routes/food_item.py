@@ -10,29 +10,22 @@ food_item = Blueprint('food_item', __name__, url_prefix='/food')
 
 @food_item.route('/', methods=['GET'])
 def get_all_food_item():
-    records = db.session.query(FoodItem.id,
-                               FoodItem.name.label('food_name'),
-                               FoodItem.restaurant_id,
-                               Restaurant.name.label('restaurant_name'),
-                               FoodItem.calories,
-                               FoodItem.fat,
-                               FoodItem.carb,
-                               FoodItem.fiber,
-                               FoodItem.protein).filter(FoodItem.restaurant_id == Restaurant.id).all()
-    
+    records = db.session.query(FoodItem, FoodItem)\
+        .join(Restaurant, FoodItem.restaurant_id == Restaurant.id).all()
+
     records = [
         {
-            'id': record[0],
-            'food_name': record[1],
-            'restaurant_id': record[2],
-            'restaurant_name': record[3],
-            'calories': record[4],
-            'fat': record[5],
-            'carb': record[6],
-            'fiber': record[7],
-            'protein': record[8]
+            'id': food_item.id,
+            'food_name': food_item.name,
+            'restaurant_id': food_item.restaurant_id,
+            'restaurant_name': restaurant.name,
+            'calories': food_item.calories,
+            'fat': food_item.fat,
+            'carb': food_item.carb,
+            'fiber': food_item.fiber,
+            'protein': food_item.protein
         }
-        for record in records
+        for food_item, restaurant in records
     ]
 
     return jsonify(records)
@@ -40,10 +33,24 @@ def get_all_food_item():
 
 @food_item.route('/<int:id>', methods=['GET'])
 def get_by_food_item(id):
-    records = db.session.query(FoodItem)\
+    records = db.session.query(FoodItem, Restaurant)\
         .join(Restaurant, FoodItem.restaurant_id == Restaurant.id)\
-        .filter(FoodItem.id == id).all()
+        .filter(FoodItem.id == id).first()
     
+    food_item, restaurant = records
+
+    records = {
+        'id': food_item.id,
+        'food_name': food_item.name,
+        'restaurant_id': food_item.restaurant_id,
+        'restaurant_name': restaurant.name,
+        'calories': food_item.calories,
+        'fat': food_item.fat,
+        'carb': food_item.carb,
+        'fiber': food_item.fiber,
+        'protein': food_item.protein
+    }
+
     return jsonify(records)
 
 
