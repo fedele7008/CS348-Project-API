@@ -70,12 +70,6 @@ def create_food_item():
             'message': 'Name is required'
         }), 400
     
-    if restaurant_id is None:
-        return jsonify({
-            'result': 'Invalid request',
-            'message': 'Restaurant ID is required'
-        }), 400
-    
     food_item = FoodItem(name=name,
                          restaurant_id=restaurant_id,
                          calories=calories,
