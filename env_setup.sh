@@ -14,7 +14,7 @@
 #   * terminal (MacOS / Linux)
 ################################################################
 
-CS348_PROJECT="CS 348 Project"
+CS348_PROJECT="NutriTrack"
 CS348_PROJECT_SCRIPT_VERSION="0.0.1"
 CS348_PROJECT_PYTHON_EXEC=python3
 CS348_PROJECT_API_PORT=6608
@@ -252,18 +252,18 @@ set_features () {
                     return 1
                 else
                     if [[ ${2} == "api" || ${2} == "app" || ${2} == "flask" ]]; then
-                        docker-compose ps | grep "cs348-project-api-api-1" 1> /dev/null 2> /dev/null
+                        docker-compose ps | grep "nutritrack-api-api-1" 1> /dev/null 2> /dev/null
                         if [[ ${?} -eq 0 ]]; then
-                            docker exec -it cs348-project-api-api-1 bash
+                            docker exec -it nutritrack-api-api-1 bash
                         else
                             echo -e "\e[33mThe api container is currently not on service.\e[0m"
                         fi
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     elif [[ ${2} == "db" || ${2} == "database" || ${2} == "mysql" ]]; then
-                        docker-compose ps | grep "cs348-project-api-db-1" 1> /dev/null 2> /dev/null
+                        docker-compose ps | grep "nutritrack-api-db-1" 1> /dev/null 2> /dev/null
                         if [[ ${?} -eq 0 ]]; then
-                            docker exec -it cs348-project-api-db-1 bash
+                            docker exec -it nutritrack-api-db-1 bash
                         else
                             echo -e "\e[33mThe db container is currently not on service.\e[0m"
                         fi
@@ -306,11 +306,11 @@ set_features () {
                     return 1
                 else
                     if [[ ${2} == "api" || ${2} == "app" || ${2} == "flask" ]]; then
-                        docker logs cs348-project-api-api-1
+                        docker logs nutritrack-api-api-1
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     elif [[ ${2} == "db" || ${2} == "database" || ${2} == "mysql" ]]; then
-                        docker logs cs348-project-api-db-1
+                        docker logs nutritrack-api-db-1
                         cd ${__CS348_SERVER_INITITAL_DIR}
                         return 0
                     else
