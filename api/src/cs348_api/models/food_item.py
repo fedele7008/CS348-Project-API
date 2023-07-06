@@ -18,7 +18,7 @@ class FoodItem(db.Model):
 
     # Define columns for database
     id = db.Column(db.INTEGER(), primary_key=True)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False)
     restaurant_id = db.Column(db.ForeignKey('restaurant.id'), nullable=False)
     calories = db.Column(db.INTEGER())
     fat = db.Column(db.INTEGER())
