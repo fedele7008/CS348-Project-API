@@ -1,4 +1,6 @@
 data/
 venv/
 **/__pycache__
+**/user_data.md
+**/tokens.md
 **/.DS_Store
