@@ -1,4 +1,3 @@
-
 import os
 import datetime
 
@@ -16,7 +15,7 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.route('/', methods=['GET'])
 def get_users():
     records = db.session.query(User).all()
-    return jsonify(records)
+    return jsonify(records), 200
 
 
 @user.cli.command('register')
