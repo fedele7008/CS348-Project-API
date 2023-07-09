@@ -1,0 +1,10 @@
+mysql> INSERT INTO user (name, password, email, registration_date) VALUES("Betty Crocker", "hashed_pw", "betty@crocker.com", CURRENT_TIMESTAMP);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT email, password FROM user WHERE email="betty@crocker.com";
++-------------------+-----------+
+| email             | password  |
++-------------------+-----------+
+| betty@crocker.com | hashed_pw |
++-------------------+-----------+
+1 row in set (0.01 sec)
