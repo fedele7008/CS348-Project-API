@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 from flask import Blueprint
 from sqlalchemy.sql import text
 
@@ -7,9 +10,9 @@ from cs348_api.models.restaurant import Restaurant
 from cs348_api.models.food_log import FoodLog
 from cs348_api.models.user import User
 from cs348_api.models.goal import Goal
-from datetime import datetime
 
 seed = Blueprint("seed", __name__)
+
 
 @seed.cli.command("delete")
 def delete_all():
@@ -26,6 +29,7 @@ def delete_all():
     db.session.execute(text('ALTER TABLE user AUTO_INCREMENT=1'))    
     db.session.commit()
 
+
 def add_food_logs(user, food_list, created_at):
     food_logs = []
     for food_item in food_list:
@@ -34,6 +38,7 @@ def add_food_logs(user, food_list, created_at):
         food_logs.append(fl)
     db.session.add_all(food_logs)
     db.session.commit()
+
 
 @seed.cli.command("all")
 def seed_all():
@@ -56,11 +61,28 @@ def seed_all():
     db.session.commit()
 
     # add two sample users
-    tim = User(name="Tim Cook", email="tim@email.com", password="password", registration_date=datetime.utcnow())
-    jane = User(name="Jane Doe", email="jane@email.com", password="janedoe", registration_date=datetime.utcnow())
+
+    tim = User(name="Tim Cook", email="tim@email.com", password="$2b$12$5F7.aGK8YgErXEjnUUjw0uoYQMDq2LH/igRFpjV/8IVhw3uknxd/K", registration_date=datetime.utcnow())
+    jane = User(name="Jane Doe", email="jane@email.com", password="$2b$12$UKc19ZNvWeV7Ae0CJ/vHJeVPksPGWFiJXwN3Ez5M8oeCNVODhOA2.", registration_date=datetime.utcnow())
     db.session.add(tim)
     db.session.add(jane)
     db.session.commit()
+
+    user_data_file = f'{os.path.dirname(os.path.realpath(__file__))}/../../../user_data.md'
+    try:
+        open(user_data_file, 'r').close()
+        with open(user_data_file, 'a') as f:
+            f.write('|{name}|{email}|{password}|\n'.format(name='Tim Cook', email='tim@email.com', password='password'))
+            f.write('|{name}|{email}|{password}|\n'.format(name='Jane Doe', email='jane@email.com', password='janedoe'))
+
+    except FileNotFoundError:
+        with open(user_data_file, 'w') as f:
+            f.write('### This file contains user registration information for debugging purposes\n')
+            f.write('These information is generated automatically by script and only show testing accounts only\n')
+            f.write('|Name|Email|Password|\n')
+            f.write('| :---: | :---: | :---: |\n')
+            f.write('|{name}|{email}|{password}|\n'.format(name='Tim Cook', email='tim@email.com', password='password'))
+            f.write('|{name}|{email}|{password}|\n'.format(name='Jane Doe', email='jane@email.com', password='janedoe'))
 
     # add goals for these users
     tim_cal_goal = Goal(name="my calorie goal", user_id=tim.id, goal_type="calorie", quantity=2500, streak=0)
@@ -78,4 +100,3 @@ def seed_all():
     add_food_logs(jane, [big_mac, pannini, bec], '2023-06-10 11:30:00')
     add_food_logs(jane, [pannini], '2023-06-11 11:30:00')
     add_food_logs(jane, [pannini, double_whopper, bec, whopper_jr], '2023-06-12 11:30:00')
-

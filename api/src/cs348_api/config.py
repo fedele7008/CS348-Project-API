@@ -6,7 +6,7 @@ mysql_config = {
     'host': os.environ.get('MYSQL_HOST', 'localhost'),
     'user': os.environ.get('MYSQL_USER', 'group8'),
     'password': os.environ.get('MYSQL_PASSWORD', 'Password0!'),
-    'database': os.environ.get('MYSQL_DATABASE', 'cs348_project')
+    'database': os.environ.get('MYSQL_DATABASE', 'nutritrack')
 }
 
 

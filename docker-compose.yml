@@ -6,7 +6,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_DATABASE: cs348_project
+      MYSQL_DATABASE: nutritrack
       MYSQL_USER: group8
       MYSQL_PASSWORD: Password0!
       MYSQL_ROOT_PASSWORD: Password0!
