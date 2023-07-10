@@ -2,7 +2,7 @@
 FROM python:3.10
 
 # State environment variables
-ENV PROJECT=CS348_PROJECT_API
+ENV PROJECT=nutritrack-api
 ENV VERSION=0.0.1
 
 ENV FLASK_APP=cs348_api
@@ -11,7 +11,7 @@ ENV FLASK_ENV=development
 ENV MYSQL_HOST=db
 ENV MYSQL_USER=group8
 ENV MYSQL_PASSWORD=Password0!
-ENV MYSQL_DATABASE=cs348_project
+ENV MYSQL_DATABASE=nutritrack
 
 # Set working directory (Home directory)
 WORKDIR /app

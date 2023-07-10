@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 from flask import Blueprint
 from sqlalchemy.sql import text
 from datetime import datetime
@@ -14,6 +17,7 @@ from cs348_api.models.goal import Goal
 
 seed = Blueprint("seed", __name__)
 
+
 @seed.cli.command("delete")
 def delete_all():
     # delete contents of all tables to reset db
@@ -28,6 +32,7 @@ def delete_all():
     db.session.execute(text('ALTER TABLE goal AUTO_INCREMENT=1'))
     db.session.execute(text('ALTER TABLE user AUTO_INCREMENT=1'))    
     db.session.commit()
+
 
 def add_food_logs(user, food_list, created_at):
     food_logs = []
@@ -59,11 +64,28 @@ def seed_all():
     db.session.commit()
 
     # add two sample users
-    tim = User(name="Tim Cook", email="tim@email.com", password="password", registration_date=datetime.utcnow())
-    jane = User(name="Jane Doe", email="jane@email.com", password="janedoe", registration_date=datetime.utcnow())
+
+    tim = User(name="Tim Cook", email="tim@email.com", password="$2b$12$5F7.aGK8YgErXEjnUUjw0uoYQMDq2LH/igRFpjV/8IVhw3uknxd/K", registration_date=datetime.utcnow())
+    jane = User(name="Jane Doe", email="jane@email.com", password="$2b$12$UKc19ZNvWeV7Ae0CJ/vHJeVPksPGWFiJXwN3Ez5M8oeCNVODhOA2.", registration_date=datetime.utcnow())
     db.session.add(tim)
     db.session.add(jane)
     db.session.commit()
+
+    user_data_file = f'{os.path.dirname(os.path.realpath(__file__))}/../../../user_data.md'
+    try:
+        open(user_data_file, 'r').close()
+        with open(user_data_file, 'a') as f:
+            f.write('|{name}|{email}|{password}|\n'.format(name='Tim Cook', email='tim@email.com', password='password'))
+            f.write('|{name}|{email}|{password}|\n'.format(name='Jane Doe', email='jane@email.com', password='janedoe'))
+
+    except FileNotFoundError:
+        with open(user_data_file, 'w') as f:
+            f.write('### This file contains user registration information for debugging purposes\n')
+            f.write('These information is generated automatically by script and only show testing accounts only\n')
+            f.write('|Name|Email|Password|\n')
+            f.write('| :---: | :---: | :---: |\n')
+            f.write('|{name}|{email}|{password}|\n'.format(name='Tim Cook', email='tim@email.com', password='password'))
+            f.write('|{name}|{email}|{password}|\n'.format(name='Jane Doe', email='jane@email.com', password='janedoe'))
 
     # add goals for these users
     tim_cal_goal = Goal(name="my calorie goal", user_id=tim.id, goal_type="calorie", quantity=2500, streak=0)
