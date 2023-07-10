@@ -2,7 +2,6 @@
 CREATE INDEX idx_food_log_created_at ON food_log (created_at);
 CREATE INDEX idx_food_log_food_item_id ON food_log (food_item_id);
 CREATE INDEX idx_food_item_food_id ON food_item (id);
-CREATE INDEX idx_food_item_food_id ON food_item (id);
 CREATE INDEX idx_restaurant_id ON restaurant (id);
 
 

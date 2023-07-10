@@ -12,7 +12,7 @@ T2 as (
     CASE 
     WHEN goal.goal_type = 'Calorie' THEN T1.calories 
     WHEN goal.goal_type = 'Fat' THEN T1.fat
-    WHEN goal.goal_type = 'Sugar' THEN T1.carb
+    WHEN goal.goal_type = 'Carb' THEN T1.carb
     WHEN goal.goal_type = 'Fiber' THEN T1.fiber
     WHEN goal.goal_type = 'Protein' THEN T1.protein
     END as consumption
@@ -42,7 +42,7 @@ T2 as (
     CASE 
     WHEN goal.goal_type = 'Calorie' THEN T1.calories 
     WHEN goal.goal_type = 'Fat' THEN T1.fat
-    WHEN goal.goal_type = 'Sugar' THEN T1.carb
+    WHEN goal.goal_type = 'Carb' THEN T1.carb
     WHEN goal.goal_type = 'Fiber' THEN T1.fiber
     WHEN goal.goal_type = 'Protein' THEN T1.protein
     END as consumption
