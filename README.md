@@ -2,10 +2,12 @@
 
 CS 348 Project: Introduction to Database Management
 
-This is the backend API for a nutrition application that allows users to search for the nutritional information of different restaurant food items, log the foods that they ate, view statistics related to their eating habits, and set nutritional goals. 
+This is the backend API for a nutrition application that allows users to search for the nutritional information of different restaurant food items, log the foods that they ate, view statistics related to their eating habits, and set nutritional goals.
 
 # Structure of project
+
 ## Structure
+
 - Flask project is structured as a package named `cs348_api`
 - **[C2-4]** SQL queries for assignment submission are stored in `doc/sql`
 - Database interactions are handled with `flask-sqlalchemy` ORM
@@ -16,6 +18,7 @@ This is the backend API for a nutrition application that allows users to search 
   - `/api/src/cs348_api/routes/index.py` handles base route (e.g. localhost:6608/)
 
 ## Current Features (C5)
+
 - Basic API endpoints to view contents of tables are avaliable with GET requests to `/food_item`, `/food_log`, `/restaurant`, `/user`
 - **[R6]** API endpoint to fetch all food items of a restaurant is avaliable at `/restaurant/<restaurant_name>/foods`
 - **[R10]** API endpoints related to authentication are avaliable at: POST to `/register`, POST to `/login`, GET to `/test_user_only_feature`
@@ -34,6 +37,7 @@ You can choose either way to work on the project.
 ## Dependencies
 
 ### If you are manually setting up:
+
 Ensure that you have a virtual environment setup.
 
 ```
@@ -59,6 +63,7 @@ Install dependencies: `pip install -r requirements.txt`
 Update dependencies: `pip install pipreqs` and `pipreqs .`
 
 ### If you are using Docker:
+
 Download Docker Desktop from https://www.docker.com/products/docker-desktop/
 This will automatically install docker and docker-compose. Both are required.
 
@@ -87,10 +92,10 @@ Setup DB
 
 ```
 # inside MySQL
-CREATE DATABASE cs348_project;
-USE cs348_project;
+CREATE DATABASE nutritrack;
+USE nutritrack;
 create user 'group8'@'localhost' identified by 'Password0!';
-grant all on cs348_project.* to 'group8'@'localhost';
+grant all on nutritrack.* to 'group8'@'localhost';
 alter user 'group8'@'localhost' identified with mysql_native_password by 'Password0!';
 ```
 
@@ -144,9 +149,10 @@ You can also inspect/modify Database in GUI: goto `http://localhost:8080` and lo
 - Server: db
 - Username: group8
 - Password: Password0!
-- Database: cs348_project
+- Database: nutritrack
 
 # Development
+
 ## Updating database
 
 To update the database schema:
