@@ -90,9 +90,10 @@ def register():
     return jsonify({
         'result': 'User created',
         'message': 'user registered: {}'.format(new_user),
-        'access_token': flask_jwt_extended.create_access_token(identity=new_user.id)
+        'access_token': flask_jwt_extended.create_access_token(identity=new_user.id),
+        'id': new_user.id
     }), 200
-
+        
 
 @auth.route('/login', methods=['POST'])
 def login():
@@ -131,7 +132,9 @@ def login():
         return jsonify({
             'result': 'Login successful',
             'message': 'Logged in as {}'.format(user),
-            'access_token': flask_jwt_extended.create_access_token(identity=user.id)
+            'access_token': flask_jwt_extended.create_access_token(identity=user.id),
+            'id': user.id,
+            'name': user.name
         }), 200
     else:
         return jsonify({

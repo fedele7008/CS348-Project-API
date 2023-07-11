@@ -7,6 +7,7 @@ from datetime import datetime
 import csv
 from faker import Faker
 import random
+import bcrypt
 
 from cs348_api.extensions import db
 from cs348_api.models.food_item import FoodItem
@@ -173,11 +174,15 @@ def seed_prod():
     Faker.seed(0) # ensure deterministic output
     users = []
     for i in range(50):
+        name=faker.name(),
+        email=faker.email(),
+        password=faker.slug(), # random slug as password (e.g. "of-street-fight")
+        registration_date=faker.date_time_this_year() # random registration date from current year
         new_user = User(
-            name=faker.name(),
-            email=faker.email(),
-            password=faker.slug(), # random slug as password (e.g. "of-street-fight")
-            registration_date=faker.date_time_this_year() # random registration date from current year
+            name=name,
+            email=email,
+            password=bcrypt.hashpw("password".encode('UTF-8'), bcrypt.gensalt()),
+            registration_date=registration_date
         )
         users.append(new_user)
     db.session.add_all(users)
