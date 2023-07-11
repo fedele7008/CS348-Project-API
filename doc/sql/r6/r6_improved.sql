@@ -1,3 +1,6 @@
+-- Index Optimization
+CREATE INDEX idx_food_item_restaurant_id ON food_log (restaurant_id);
+
 SELECT food_item.name, calories, fat, carb, fiber, protein
 FROM food_item 
 WHERE EXISTS (
@@ -10,5 +13,3 @@ WHERE EXISTS (
 SELECT name, calories, fat, carb, fiber, protein
 FROM food_item 
 WHERE name = <foodName>;
-
-
