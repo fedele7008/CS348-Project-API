@@ -29,7 +29,7 @@ class FoodItem(db.Model):
 
     # __repr__ is used for printing object info (debugging purposes)
     def __repr__(self):
-        return '<FoodItem: id={id}, name={name}, restaurnat_id={restaurant_id}, calories={calories}, fat={fat}, carb={carb}, fiber={fiber}, protein={protein}>'.format(
+        return '<FoodItem: id={id}, name={name}, restaurant_id={restaurant_id}, calories={calories}, fat={fat}, carb={carb}, fiber={fiber}, protein={protein}>'.format(
             id=self.id,
             name=self.name,
             restaurant_id=self.restaurant_id,

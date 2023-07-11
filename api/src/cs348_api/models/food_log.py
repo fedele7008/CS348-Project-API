@@ -22,7 +22,7 @@ class FoodLog(db.Model):
 
     # __repr__ is used for printing object info (debugging purposes)
     def __repr__(self):
-        return '<FoodLog: id={id}, user_id={user_id}, food_item_id={food_item_id}, created_at={created_ap}>'.format(
+        return '<FoodLog: id={id}, user_id={user_id}, food_item_id={food_item_id}, created_at={created_at}>'.format(
             id=self.id,
             user_id=self.user_id,
             food_item_id=self.food_item_id,
