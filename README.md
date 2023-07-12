@@ -116,6 +116,8 @@ Seed database with prod data: `flask seed prod`
 
 Clean database (for reseed): `flask seed delete`
 
+Note: data used to seed the prod database can be found under `/api/cs348_api/csv`
+
 #### **For Docker setup:**
 
 `flask db upgrade` is automatically done by Docker.
