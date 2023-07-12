@@ -20,7 +20,8 @@ This is the backend API for a nutrition application that allows users to search 
 ## Current Features (C5)
 
 - Basic API endpoints to view contents of tables are avaliable with GET requests to `/food_item`, `/food_log`, `/restaurant`, `/user`
-- **[R6]** API endpoint to fetch all food items of a restaurant is avaliable at `/restaurant/<restaurant_name>/foods`
+- **[R6]** API endpoint to fetch all food items from restaurants is avaliable from `/restaurant`, see `/routes/restaurant.py`
+- **[R7]** API endpoints related to food logging are avaliable from `/log`, see `/routes/food_log.py`
 - **[R10]** API endpoints related to authentication are avaliable at: POST to `/register`, POST to `/login`, GET to `/test_user_only_feature`
 
 # Setup instructions
@@ -109,7 +110,9 @@ Doesn't require any action
 
 Run migrations to create all database tables: `flask db upgrade`
 
-Seed database: `flask seed all`
+Seed database with sample data: `flask seed sample`
+
+Seed database with prod data: `flask seed prod`
 
 Clean database (for reseed): `flask seed delete`
 
