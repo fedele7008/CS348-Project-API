@@ -1,0 +1,21 @@
+Registering a user:
+mysql> INSERT INTO user (name, password, email, registration_date) VALUES("Betty Crocker", "hashed_pw", "betty@crocker.com", CURRENT_TIMESTAMP);
+
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM user WHERE name="Betty Crocker";
++----+---------------+-----------+-------------------+---------------------+
+| id | name          | password  | email             | registration_date   |
++----+---------------+-----------+-------------------+---------------------+
+| 51 | Betty Crocker | hashed_pw | betty@crocker.com | 2023-07-11 22:10:57 |
++----+---------------+-----------+-------------------+---------------------+
+1 row in set (0.00 sec)
+
+Logging in:
+mysql> SELECT email, password FROM user WHERE email="betty@crocker.com";
++-------------------+-----------+
+| email             | password  |
++-------------------+-----------+
+| betty@crocker.com | hashed_pw |
++-------------------+-----------+
+1 row in set (0.00 sec)

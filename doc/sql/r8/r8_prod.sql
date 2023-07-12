@@ -1,9 +1,5 @@
 -- Index Optimization
 CREATE INDEX idx_food_log_created_at ON food_log (created_at);
-CREATE INDEX idx_food_log_food_item_id ON food_log (food_item_id);
-CREATE INDEX idx_food_item_food_id ON food_item (id);
-CREATE INDEX idx_restaurant_id ON restaurant (id);
-
 
 -- Most popular foods
 SELECT fitem.id, fitem.name, COUNT(*) AS purchase_count
@@ -43,12 +39,3 @@ WHERE DATE(flog.created_at) BETWEEN '2023-04-17' AND now()
 GROUP BY restaurant.id, restaurant.name
 HAVING COUNT(*) > 2
 ORDER BY purchase_count DESC;
-
--- Output:
-+----+-------------+----------------+
-| id | name        | purchase_count |
-+----+-------------+----------------+
-|  2 | McDonalds   |           2999 |
-|  3 | Starbucks   |            932 |
-|  1 | Burger King |            872 |
-+----+-------------+----------------+

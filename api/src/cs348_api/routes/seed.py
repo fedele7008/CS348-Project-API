@@ -92,10 +92,10 @@ def seed_all():
     tim_cal_goal = Goal(name="my calorie goal", user_id=tim.id, goal_type="calorie", quantity=2500, streak=0)
     tim_fat_goal = Goal(name="get gains goal", user_id=tim.id, goal_type="fat", quantity=100, streak=1)
     tim_protein_goal = Goal(name="my fat goal", user_id=tim.id, goal_type="fat", quantity=50, streak=5)
-    tim_sugar_goal = Goal(name="reduce sugar!", user_id=tim.id, goal_type="sugar", quantity=20, streak=2)
+    tim_carb_goal = Goal(name="my carb goal!", user_id=tim.id, goal_type="carb", quantity=200, streak=2)
     jane_cal_goal = Goal(name="reduce calorie goal", user_id=jane.id, goal_type="calorie", quantity=2000, streak=0)
     jane_fiber_goal = Goal(name="increase fiber consumption", user_id=jane.id, goal_type="fiber", quantity=2000, streak=0)
-    db.session.add_all([tim_cal_goal, tim_fat_goal, tim_protein_goal, tim_sugar_goal, jane_cal_goal, jane_fiber_goal])
+    db.session.add_all([tim_cal_goal, tim_fat_goal, tim_protein_goal, tim_carb_goal, jane_cal_goal, jane_fiber_goal])
     db.session.commit()
 
     # add food logs for Tim and Jane

@@ -1,0 +1,10 @@
++----------------------------+-----------+----------+-------------+-------------------+--------+
+| name                       | goal_type | quantity | consumption | status            | streak |
++----------------------------+-----------+----------+-------------+-------------------+--------+
+| Chelsea Key's fiber goal   | fiber     |       80 |           7 | Goal not Achieved |      0 |
+| Chelsea Key's protein goal | protein   |       90 |          40 | Goal not Achieved |      0 |
+| Chelsea Key's calorie goal | calorie   |     1810 |        1120 | Goal not Achieved |      0 |
+| Chelsea Key's fat goal     | fat       |      150 |          52 | Goal not Achieved |      0 |
+| Chelsea Key's carb goal    | carb      |      150 |         128 | Goal not Achieved |      0 |
++----------------------------+-----------+----------+-------------+-------------------+--------+
+5 rows in set (0.00 sec)

@@ -35,3 +35,14 @@ CREATE TABLE food_log (
         FOREIGN KEY(food_item_id) REFERENCES food_item (id),
         FOREIGN KEY(user_id) REFERENCES user (id)
 );
+
+CREATE TABLE goal (
+        id INTEGER NOT NULL AUTO_INCREMENT,
+        user_id INTEGER NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        goal_type VARCHAR(255),
+        quantity INTEGER,
+        streak INTEGER,
+        PRIMARY KEY (id),
+        FOREIGN KEY(user_id) REFERENCES user (id)
+)
