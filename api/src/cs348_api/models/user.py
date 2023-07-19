@@ -11,6 +11,7 @@ class User(db.Model):
     name: str
     email: str
     registration_date: datetime = field(default_factory=datetime.utcnow)
+    role: str
 
 
     # Define columns for database
@@ -19,7 +20,7 @@ class User(db.Model):
     password = db.Column(db.String(255))
     email = db.Column(db.String(255), unique=True)
     registration_date = db.Column(db.DateTime(), nullable=False)
-
+    role = db.Column(db.String(255), default="user")
 
     # __repr__ is used for printing object info (debugging purposes)
     def __repr__(self):
@@ -35,5 +36,5 @@ class User(db.Model):
     # __str__ is used for printing object info (user friendly)
     def __str__(self):
         return '<User: {} (ID: {}) [{}] - REGISTERED: {}>'.format(
-            self.name, self.id, self.email, self.registration_date
+            self.name, self.id, self.email, self.registration_date, self.role
         )
