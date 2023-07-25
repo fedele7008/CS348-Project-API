@@ -31,5 +31,6 @@ def create_app():
     app.register_blueprint(blueprints.seed)
     app.register_blueprint(blueprints.user)
     app.register_blueprint(blueprints.auth)
+    app.register_blueprint(blueprints.goal)
 
     return app
