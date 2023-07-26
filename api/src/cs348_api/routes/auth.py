@@ -142,6 +142,26 @@ def login():
             'message': 'Wrong credentials'
         }), 401
 
+@auth.route('/is_admin', methods=['GET'])
+@flask_jwt_extended.jwt_required()
+def isAdmin():
+    current_user_id = flask_jwt_extended.get_jwt_identity()
+    if current_user_id is None:
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires authentication'
+        }), 200
+    user = db.session.query(User).filter_by(id=current_user_id).first()
+    if user.role == "admin":
+        return jsonify({
+            'isAdmin': True,
+            'message': 'Welcome! {}'.format(user.name)
+        }), 200
+    else:
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires admin authorization'
+        }), 200
 
 # Sample endpoint
 @auth.route('/test_user_only_feature', methods=['POST', 'GET'])
