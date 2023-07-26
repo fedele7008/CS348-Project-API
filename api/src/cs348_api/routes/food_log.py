@@ -4,6 +4,8 @@ from cs348_api.extensions import db
 from cs348_api.models.food_log import FoodLog
 from cs348_api.models.user import User
 from cs348_api.models.food_item import FoodItem
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func, cast, Date
 
 import flask_jwt_extended
 from datetime import datetime
@@ -86,6 +88,35 @@ def get_food_logs_of(user_id):
         .filter(User.id == user_id).all()
 
     return jsonify(logs), 200
+
+@food_log.route('/consumption/<int:user_id>', methods=['GET'])
+def get_food_consumption_of(user_id):
+    date = datetime.strptime('2023-06-22 00:00:00', '%Y-%m-%d %H:%M:%S') 
+    # date = datetime.now()
+    result = db.session.query(
+        FoodLog.user_id,
+        func.sum(FoodItem.calories).label('calorie'),
+        func.sum(FoodItem.fat).label('fat'),
+        func.sum(FoodItem.carb).label('carb'),
+        func.sum(FoodItem.fiber).label('fiber'),
+        func.sum(FoodItem.protein).label('protein')
+    ).join(FoodItem, FoodLog.food_item_id == FoodItem.id)\
+     .filter(FoodLog.user_id == user_id,cast(FoodLog.created_at, Date) == date.date())\
+     .group_by(FoodLog.user_id).first()
+    
+    if not result:
+        result = (user_id, 0, 0, 0, 0, 0)
+    
+    data = {
+        'user_id': result[0],
+        'calorie': result[1],
+        'fat': result[2],
+        'carb': result[3],
+        'fiber': result[4],
+        'protein': result[5]
+    }
+
+    return jsonify(data), 200
 
 @food_log.route('/<int:id>', methods=['PUT'])
 def update_food_log(id):

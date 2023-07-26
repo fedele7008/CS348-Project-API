@@ -116,7 +116,7 @@ def seed_prod():
 
     # Load food items from csv
     burger_king_food = []
-    with open("./cs348_api/csv/burger-king-menu.csv") as f:
+    with open("./cs348_api/csv/burger-king-menu.csv",encoding='utf8') as f:
         reader = csv.DictReader(f)
         next(reader)
         for row in reader:
@@ -134,7 +134,7 @@ def seed_prod():
         db.session.commit()
     
     mcdonalds_food = []
-    with open("./cs348_api/csv/mcdonalds.csv") as f:
+    with open("./cs348_api/csv/mcdonalds.csv",encoding='utf8') as f:
         reader = csv.DictReader(f)
         next(reader)
         for row in reader:
@@ -152,7 +152,7 @@ def seed_prod():
         db.session.commit()
     
     starbucks_food = []
-    with open("./cs348_api/csv/starbucks.csv") as f:
+    with open("./cs348_api/csv/starbucks.csv",encoding='utf8') as f:
         reader = csv.DictReader(f)
         next(reader)
         for row in reader:
