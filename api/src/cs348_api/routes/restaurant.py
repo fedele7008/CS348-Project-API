@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request
 
+import flask_jwt_extended
 from cs348_api.extensions import db
 from cs348_api.models.restaurant import Restaurant
 from cs348_api.models.food_item import FoodItem
+from cs348_api.models.user import User
 
 restaurant = Blueprint('restaurant', __name__, url_prefix='/restaurant')
 
@@ -29,7 +31,22 @@ def get_restaurant(id):
 
 
 @restaurant.route('/', methods=['POST'])
+@flask_jwt_extended.jwt_required()
 def create_restaurant():
+    # Admin authorization checks
+    current_user_id = flask_jwt_extended.get_jwt_identity()
+    if current_user_id is None:
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires authentication'
+        }), 401
+    user = db.session.query(User).filter_by(id=current_user_id).first()
+    if user.role != "admin":
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires admin authorization'
+        }), 401
+    
     # Get information from request
     if not request.is_json:
         return jsonify({

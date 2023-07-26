@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.orm import aliased
 
+import flask_jwt_extended
 from cs348_api.extensions import db
 from cs348_api.models.food_item import FoodItem
 from cs348_api.models.restaurant import Restaurant 
+from cs348_api.models.user import User
 
 food_item = Blueprint('food_item', __name__, url_prefix='/food')
 
@@ -55,7 +57,22 @@ def get_by_food_item(id):
 
 
 @food_item.route('/', methods=['POST'])
+@flask_jwt_extended.jwt_required()
 def create_food_item():
+    # Admin authorization checks
+    current_user_id = flask_jwt_extended.get_jwt_identity()
+    if current_user_id is None:
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires authentication'
+        }), 401
+    user = db.session.query(User).filter_by(id=current_user_id).first()
+    if user.role != "admin":
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires admin authorization'
+        }), 401
+
     # Get information from request
     if not request.is_json:
         return jsonify({
@@ -63,7 +80,7 @@ def create_food_item():
             'message': 'Request must be in JSON format'
         }), 400
     
-    name = request.json.get('name', None)
+    name = request.json.get('food_name', None)
     restaurant_id = request.json.get('restaurant_id', None)
     calories = request.json.get('calories', None)
     fat = request.json.get('fat', None)
@@ -96,7 +113,22 @@ def create_food_item():
 
 
 @food_item.route('/<int:id>', methods=['PUT'])
+@flask_jwt_extended.jwt_required()
 def update_food_item(id):
+    # Admin authorization checks
+    current_user_id = flask_jwt_extended.get_jwt_identity()
+    if current_user_id is None:
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires authentication'
+        }), 401
+    user = db.session.query(User).filter_by(id=current_user_id).first()
+    if user.role != "admin":
+        return jsonify({
+            'isAdmin': False,
+            'message': 'This feature requires admin authorization'
+        }), 401
+
     # Get information from request
     if not request.is_json:
         return jsonify({
@@ -104,7 +136,7 @@ def update_food_item(id):
             'message': 'Request must be in JSON format'
         }), 400
     
-    name = request.json.get('name', None)
+    name = request.json.get('food_name', None)
     restaurant_id = request.json.get('restaurant_id', None)
     calories = request.json.get('calories', None)
     fat = request.json.get('fat', None)

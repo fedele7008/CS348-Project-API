@@ -44,4 +44,4 @@ def jwt_secret_key():
 
 
 def jwt_access_token_expires():
-    return datetime.timedelta(minutes=5)
+    return datetime.timedelta(minutes=60)
