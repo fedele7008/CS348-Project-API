@@ -86,5 +86,6 @@ def create_app():
     app.register_blueprint(blueprints.user)
     app.register_blueprint(blueprints.auth)
     app.register_blueprint(blueprints.goal)
+    app.register_blueprint(blueprints.statistics)
 
     return app

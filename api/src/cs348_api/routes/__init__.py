@@ -6,3 +6,4 @@ from cs348_api.routes.seed import seed
 from cs348_api.routes.user import user
 from cs348_api.routes.auth import auth
 from cs348_api.routes.goal import goal
+from cs348_api.routes.statistics import statistics
