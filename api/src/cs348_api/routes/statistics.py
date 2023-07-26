@@ -56,7 +56,6 @@ def get_average_calories_per_restaurant(top_rank):
         record[0] for record in top_restaurant
     ]
 
-    set_read_uncommitted_level()
     records = db.session.query(Restaurant.id, Restaurant.name, func.avg(FoodItem.calories).label('avg_calories'))\
         .join(FoodItem, Restaurant.id == FoodItem.restaurant_id)\
         .filter(Restaurant.id.in_(top_restaurant))\

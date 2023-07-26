@@ -1,7 +1,6 @@
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 WITH user_foods AS
 (
-        SELECT  fitem.calories
+        SELECT  fitem.calories, fitem.fat, fitem.carb, fitem.fiber, fitem.protein
                ,flog.created_at
         FROM food_log AS flog
         JOIN food_item AS fitem
@@ -10,5 +9,9 @@ WITH user_foods AS
 )
 SELECT  DATE(created_at) as foodDate
        ,SUM(calories) as calorieSum
+       ,SUM(fat) as fatSum
+       ,SUM(carb) as carbSum
+       ,SUM(fiber) as fiberSum
+       ,SUM(protein) as proteinSum
 FROM user_foods
 GROUP BY  DATE(created_at);
