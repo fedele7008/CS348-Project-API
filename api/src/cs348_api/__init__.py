@@ -31,6 +31,6 @@ def create_app():
     app.register_blueprint(blueprints.restaurant)
     app.register_blueprint(blueprints.seed)
     app.register_blueprint(blueprints.user)
-    
+    app.register_blueprint(blueprints.statistics)
 
     return app
