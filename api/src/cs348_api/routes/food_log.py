@@ -89,10 +89,12 @@ def get_food_logs_of(user_id):
 
     return jsonify(logs), 200
 
-@food_log.route('/consumption/<int:user_id>', methods=['GET'])
-def get_food_consumption_of(user_id):
-    date = datetime.strptime('2023-06-22 00:00:00', '%Y-%m-%d %H:%M:%S') 
-    # date = datetime.now()
+
+@food_log.route('/consumption', methods=['GET'])
+@flask_jwt_extended.jwt_required()
+def get_food_consumption_of():
+    user_id = flask_jwt_extended.get_jwt_identity()
+    date = datetime.now()
     result = db.session.query(
         FoodLog.user_id,
         func.sum(FoodItem.calories).label('calorie'),
