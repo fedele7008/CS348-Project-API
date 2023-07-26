@@ -1,3 +1,4 @@
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 WITH user_foods AS
 (
         SELECT  fitem.calories, fitem.fat, fitem.carb, fitem.fiber, fitem.protein
