@@ -2,6 +2,7 @@ from calendar import monthrange
 
 from flask import Blueprint, jsonify, request
 from sqlalchemy import func, desc
+from sqlalchemy.sql import text
 
 from cs348_api.extensions import db
 from cs348_api.models.food_log import FoodLog
@@ -10,10 +11,16 @@ from cs348_api.models.restaurant import Restaurant
 
 statistics = Blueprint('stat', __name__, url_prefix='/stat')
 
+def set_read_uncommitted_level():
+    transaction_sql = text("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
+    db.session.execute(transaction_sql)
+
 
 @statistics.route('/logged-food-stat-pie/<int:year>/<int:month>', methods=['GET'])
 def get_logged_food_statistics_pie(year, month):
     nextmonth = month + 1 if month < 12 else 1
+
+    set_read_uncommitted_level()
     records = db.session.query(Restaurant.id, Restaurant.name, func.count().label('count'))\
         .join(FoodItem, Restaurant.id == FoodItem.restaurant_id)\
         .join(FoodLog, FoodItem.id == FoodLog.food_item_id)\
@@ -36,6 +43,7 @@ def get_logged_food_statistics_pie(year, month):
 
 @statistics.route('/average-calories-per-restaurant/<int:top_rank>', methods=['GET'])
 def get_average_calories_per_restaurant(top_rank):
+    set_read_uncommitted_level()
     top_restaurant = db.session.query(Restaurant.id, Restaurant.name, func.count(FoodLog.id).label('count'))\
         .join(FoodItem, Restaurant.id == FoodItem.restaurant_id)\
         .join(FoodLog, FoodItem.id == FoodLog.food_item_id)\
@@ -48,6 +56,7 @@ def get_average_calories_per_restaurant(top_rank):
         record[0] for record in top_restaurant
     ]
 
+    set_read_uncommitted_level()
     records = db.session.query(Restaurant.id, Restaurant.name, func.avg(FoodItem.calories).label('avg_calories'))\
         .join(FoodItem, Restaurant.id == FoodItem.restaurant_id)\
         .filter(Restaurant.id.in_(top_restaurant))\
@@ -68,6 +77,8 @@ def get_average_calories_per_restaurant(top_rank):
 @statistics.route('/trending_food/<int:year>/<int:month>/<int:rank>', methods=['GET'])
 def get_most_trending_food(year, month, rank):
     nextmonth = month + 1 if month < 12 else 1
+
+    set_read_uncommitted_level()
     record = db.session.query(FoodItem, func.count(FoodLog.id).label('count'))\
         .join(FoodLog, FoodLog.food_item_id == FoodItem.id)\
         .filter(FoodLog.created_at >= f'{year}-{month}-1',
@@ -101,6 +112,7 @@ def get_restaurant_trend(year, month):
     nextmonth = month + 1 if month < 12 else 1
     last_day = monthrange(year, month)[1]
     
+    set_read_uncommitted_level()
     records = db.session.query(FoodItem.restaurant_id, FoodLog.created_at, func.count(FoodLog.id).label('count'))\
         .join(FoodItem, FoodLog.food_item_id == FoodItem.id)\
         .filter(FoodLog.created_at >= f'{year}-{month}-1',
