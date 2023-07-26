@@ -33,6 +33,47 @@ def get_all_food_item():
     return jsonify(records)
 
 
+@food_item.route('/filter', methods=['POST'])
+def get_filtered_food_item():
+    if not request.is_json:
+        return jsonify({
+            'result': 'Invalid request',
+            'message': 'Request must be in JSON format'
+        }), 400
+    
+    restaurants = request.json.get('restaurants', [])
+    if len(restaurants) == 0:
+        restaurants = db.session.query(Restaurant.id, Restaurant.name).all()
+        restaurants = [
+            res.id for res in restaurants
+        ]
+    
+    search_query = request.json.get('search_query', '')
+    sort_by = request.json.get('sort_by', 'name')
+    if sort_by == 'name':
+        sort_by = FoodItem.name
+    elif sort_by == 'calories':
+        sort_by = FoodItem.calories
+    sort_order = request.json.get('sort_order', 'asc')
+
+    records = db.session.query(FoodItem)\
+    .join(Restaurant, FoodItem.restaurant_id == Restaurant.id)\
+    .filter(Restaurant.id.in_(restaurants))
+    
+    if search_query != '':
+        records = records.filter(FoodItem.name.like(f'%{search_query}%'))
+    
+    records = records.order_by(sort_by if sort_order == 'asc' else sort_by.desc())\
+    .all()
+
+    records = jsonify(records).get_json()
+    for record in records:
+        record['food_name'] = record.pop('name')
+    print(records)
+
+    return jsonify(records)
+
+
 @food_item.route('/<int:id>', methods=['GET'])
 def get_by_food_item(id):
     records = db.session.query(FoodItem, Restaurant)\
