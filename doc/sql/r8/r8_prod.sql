@@ -2,6 +2,7 @@
 CREATE INDEX idx_food_log_created_at ON food_log (created_at);
 
 -- Most popular foods
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SELECT fitem.id, fitem.name, COUNT(*) AS purchase_count
 FROM food_log AS flog
 JOIN food_item AS fitem ON flog.food_item_id = fitem.id
@@ -11,6 +12,7 @@ HAVING COUNT(*) > <min_count>
 ORDER BY purchase_count <choice>;
 
 -- Most popular restaurants
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SELECT restaurant.id, restaurant.name, COUNT(*) AS purchase_count
 FROM food_log AS flog
 JOIN food_item AS fitem ON flog.food_item_id = fitem.id
@@ -21,6 +23,7 @@ HAVING COUNT(*) > <min_count>
 ORDER BY purchase_count <choice>;
 
 -- Most popular foods in restaurants
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SELECT fitem.id, fitem.name, COUNT(*) AS purchase_count
 FROM food_log AS flog
 JOIN food_item AS fitem ON flog.food_item_id = fitem.id
@@ -31,6 +34,7 @@ HAVING COUNT(*) > <min_count>
 ORDER BY purchase_count <choice>;
 
 -- Sample Production SQL
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SELECT restaurant.id, restaurant.name, COUNT(*) AS purchase_count
 FROM food_log AS flog
 JOIN food_item AS fitem ON flog.food_item_id = fitem.id

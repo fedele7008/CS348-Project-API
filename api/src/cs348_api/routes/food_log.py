@@ -208,23 +208,16 @@ def get_food_stats():
     user_id = flask_jwt_extended.get_jwt_identity()
     stats_sql = text(
         """
-        WITH user_foods AS
-        (
-                SELECT  fitem.calories, fitem.fat, fitem.carb, fitem.fiber, fitem.protein
-                    ,flog.created_at
-                FROM food_log AS flog
-                JOIN food_item AS fitem
-                ON flog.food_item_id = fitem.id
-                WHERE flog.user_id = '%s'
-        )
-        SELECT  DATE(created_at) as foodDate
-            ,SUM(calories) as calorieSum
-            ,SUM(fat) as fatSum
-            ,SUM(carb) as carbSum
-            ,SUM(fiber) as fiberSum
-            ,SUM(protein) as proteinSum
-        FROM user_foods
-        GROUP BY DATE(created_at);
+        SELECT DATE(flog.created_at) as foodDate 
+            ,SUM(fitem.calories) as calorieSum
+            ,SUM(fitem.fat) as fatSum
+            ,SUM(fitem.carb) as carbSum
+            ,SUM(fitem.fiber) as fiberSum
+            ,SUM(fitem.protein) as proteinSum
+        FROM food_log AS flog
+        JOIN food_item AS fitem ON flog.food_item_id = fitem.id
+        WHERE flog.user_id = '%s'
+        GROUP BY DATE(flog.created_at);
         """ % user_id)
     stats = db.session.execute(stats_sql)
     stats = [{"date": row[0], "calorieCount": row[1], "fatCount": row[2], "carbCount": row[3], "fiberCount": row[4], "proteinCount": row[5]} for row in stats]

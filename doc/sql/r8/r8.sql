@@ -1,4 +1,5 @@
 -- Most popular foods
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 WITH foods_in_date AS
 (
 	SELECT  fitem.id
@@ -17,6 +18,7 @@ HAVING purchase_count > <min_count>
 ORDER BY purchase_count <choice>;
 
 -- Most popular restaurants
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 WITH foods_and_restaurants_in_date AS
 (
 	SELECT  restaurant.id
@@ -37,6 +39,7 @@ HAVING purchase_count > <min_count>
 ORDER BY purchase_count <choice>;
 
 -- Most popular foods at a restaurant
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 WITH foods_at_restaurant_in_date AS
 (
 	SELECT  fitem.id
