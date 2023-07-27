@@ -178,10 +178,15 @@ def seed_prod():
         email=faker.email(),
         password=faker.slug(), # random slug as password (e.g. "of-street-fight")
         registration_date=faker.date_time_this_year() # random registration date from current year
+        if i == 0:
+            role = "admin" # first user is an admin
+        else:
+            role = "user"
         new_user = User(
             name=name,
             email=email,
             password=bcrypt.hashpw("password".encode('UTF-8'), bcrypt.gensalt()),
+            role=role,
             registration_date=registration_date
         )
         users.append(new_user)
@@ -210,8 +215,10 @@ def seed_prod():
     goal_types = ["calorie", "fat", "carb", "fiber", "protein"]
     goal_quantities = {"calorie": [1500, 5000], "fat": [20, 200], "carb": [50, 500], "fiber": [10, 100], "protein": [30, 200]}
     # For each user, randomly generate between 0 to 5 goals
-    for user in users:
+    for i, user in enumerate(users):
         num_goals = faker.random_int(0, 5)
+        if i == 0:
+            num_goals = 3 # choose 3 goals for first user
         goals = random.sample(goal_types, num_goals) # choose num_goals goal types
         for goal_type in goals:
             # Generate a goal with quantity within the goal type's specified range

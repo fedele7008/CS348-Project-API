@@ -6,6 +6,7 @@ from cs348_api.models.user import User
 from cs348_api.models.food_item import FoodItem
 from cs348_api.models.goal import Goal
 
+import flask_jwt_extended
 from datetime import datetime
 
 goal = Blueprint('goal', __name__, url_prefix='/goal')
@@ -17,8 +18,17 @@ def get_goal(id):
 
     return jsonify(goals), 200
 
-@goal.route('/user/<int:user_id>', methods=['GET'])
-def get_goals_of_user(user_id):
+@goal.route('/user', methods=['GET'])
+@flask_jwt_extended.jwt_required()
+def get_goals_of_user():
+    user_id = flask_jwt_extended.get_jwt_identity()
+
+    # Validate user_id
+    if user_id is None:
+        return jsonify({
+            'result': 'Unauthorized',
+            'message': 'This feature requires authentication'
+        }), 401
 
     goals = db.session.query(Goal)\
         .join(User, Goal.user_id == User.id)\
@@ -27,21 +37,23 @@ def get_goals_of_user(user_id):
     return jsonify(goals), 200
 
 @goal.route('/', methods=['POST'])
+@flask_jwt_extended.jwt_required()
 def create_goal():
     # Get data from the request JSON
     data = request.get_json()
-    user_id = data.get('user_id')
+    # user_id = data.get('user_id')
     name = data.get('name')
     goal_type = data.get('goal_type')
     quantity = data.get('quantity')
     streak = data.get('streak', 0)  # Default streak to 0 if not provided
+    user_id = flask_jwt_extended.get_jwt_identity()
 
     # Validate user_id
     if user_id is None:
         return jsonify({
-            'result': 'Invalid request',
-            'message': 'User ID is required'
-        }), 400
+            'result': 'Unauthorized',
+            'message': 'This feature requires authentication'
+        }), 401
 
     # Validate goal_type and quantity
     if goal_type is None or quantity is None:
