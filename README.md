@@ -22,8 +22,14 @@ This is the backend API for a nutrition application that allows users to search 
 - Basic API endpoints to view contents of tables are avaliable with GET requests to `/food_item`, `/food_log`, `/restaurant`, `/user`
 - **[R6]** API endpoint to fetch all food items from restaurants is avaliable from `/restaurant`, see `/routes/restaurant.py`
 - **[R7]** API endpoints related to food logging are avaliable from `/log`, see `/routes/food_log.py`
-- **[R10]** API endpoints related to authentication are avaliable at: POST to `/register`, POST to `/login`, GET to `/test_user_only_feature`
-
+- **[R8]** API endpoints related to general food statistics are avaliable from `/stat`, see `/routes/statistics.py`
+- **[R9]** API endpoints related to user statistics are avaliable from `/log/stats`, see `/routes/food_log.py`
+- **[R10]** API endpoints related to authentication are avaliable at: POST to `/register`, POST to `/login``, see `/routes/auth.py`
+- **[R11]** API endpoints related to goals are avaliable from `/goal`, see `/routes/goal.py`
+- **[R13]** API endpoints related to goal streaks are avaliable from `/goal`, see `/__init__.py` and SQL in docs
+- **[R14]** API endpoints related to admin dashboard are avaliable from `/is_admin`, `/food_item`, and `/restaurant`, see `/routes/auth.py`
+- **[R15]** An example of SQL optimizations can be seen at `/routes/statistics.py`
+- **[R16]** Some user security related setup can be seen at `/routes/auth.py`
 # Setup instructions
 
 Download the repository to your desired location, the path shouldn't contain any space.

@@ -1,7 +1,62 @@
-mysql> SHOW EVENTS;
-+------------+--------------+----------------+-----------+-----------+------------+----------------+----------------+---------------------+------+---------+------------+----------------------+----------------------+--------------------+
-| Db         | Name         | Definer        | Time zone | Type      | Execute at | Interval value | Interval field | Starts              | Ends | Status  | Originator | character_set_client | collation_connection | Database Collation |
-+------------+--------------+----------------+-----------+-----------+------------+----------------+----------------+---------------------+------+---------+------------+----------------------+----------------------+--------------------+
-| nutritrack | goal_streaks | root@localhost | SYSTEM    | RECURRING | NULL       | 1              | DAY            | 2023-07-11 22:37:15 | NULL | ENABLED |          1 | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
-+------------+--------------+----------------+-----------+-----------+------------+----------------+----------------+---------------------+------+---------+------------+----------------------+----------------------+--------------------+
-1 row in set (0.01 sec)
+mysql> SELECT email, role FROM user WHERE email="tammy76@example.com";
++---------------------+-------+
+| email               | role  |
++---------------------+-------+
+| tammy76@example.com | admin |
++---------------------+-------+
+1 row in set (0.00 sec)
+
+mysql> select * from food_item LIMIT 5;
++----+---------------------------------------+---------------+----------+------+------+-------+---------+
+| id | name                                  | restaurant_id | calories | fat  | carb | fiber | protein |
++----+---------------------------------------+---------------+----------+------+------+-------+---------+
+|  1 | Whopper® Sandwich with Cheese         |             1 |      740 |   46 |   50 |     2 |      32 |
+|  2 | Bacon & Cheese Whopper® Sandwich      |             1 |      790 |   51 |   50 |     2 |      35 |
+|  3 | Double Whopper® Sandwich              |             1 |      900 |   58 |   49 |     2 |      48 |
+|  4 | Double Whopper® Sandwich with Cheese  |             1 |      980 |   64 |   50 |     2 |      52 |
+|  5 | Triple Whopper® Sandwich              |             1 |     1130 |   75 |   49 |     2 |      67 |
++----+---------------------------------------+---------------+----------+------+------+-------+---------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE food_item SET name = "Bacon & Cheese Whopper® Sandwich", calories = 700, carb = 50, fat = 50, fiber = 2, protein = 50
+    -> WHERE id = 2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from food_item LIMIT 5;
++----+---------------------------------------+---------------+----------+------+------+-------+---------+
+| id | name                                  | restaurant_id | calories | fat  | carb | fiber | protein |
++----+---------------------------------------+---------------+----------+------+------+-------+---------+
+|  1 | Whopper® Sandwich with Cheese         |             1 |      740 |   46 |   50 |     2 |      32 |
+|  2 | Bacon & Cheese Whopper® Sandwich      |             1 |      700 |   50 |   50 |     2 |      50 |
+|  3 | Double Whopper® Sandwich              |             1 |      900 |   58 |   49 |     2 |      48 |
+|  4 | Double Whopper® Sandwich with Cheese  |             1 |      980 |   64 |   50 |     2 |      52 |
+|  5 | Triple Whopper® Sandwich              |             1 |     1130 |   75 |   49 |     2 |      67 |
++----+---------------------------------------+---------------+----------+------+------+-------+---------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO food_item (name, restaurant_id, calories, carb, fat, fiber, protein)
+ALUE    -> VALUES ("new food", 2, 1000, 50, 50, 1, 25);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from food_item WHERE name="new food";
++-----+----------+---------------+----------+------+------+-------+---------+
+| id  | name     | restaurant_id | calories | fat  | carb | fiber | protein |
++-----+----------+---------------+----------+------+------+-------+---------+
+| 414 | new food |             2 |     1000 |   50 |   50 |     1 |      25 |
++-----+----------+---------------+----------+------+------+-------+---------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO restaurant (name) VALUES ("My restaurant");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM restaurant;
++----+---------------+
+| id | name          |
++----+---------------+
+|  1 | Burger King   |
+|  2 | McDonalds     |
+|  3 | Starbucks     |
+|  4 | My restaurant |
++----+---------------+
+4 rows in set (0.00 sec)
